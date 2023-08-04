@@ -1,17 +1,5 @@
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
-pub struct HelloRequest {
-    #[prost(string, tag = "1")]
-    pub name: ::prost::alloc::string::String,
-}
-#[allow(clippy::derive_partial_eq_without_eq)]
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct HelloResponse {
-    #[prost(string, tag = "1")]
-    pub message: ::prost::alloc::string::String,
-}
-#[allow(clippy::derive_partial_eq_without_eq)]
-#[derive(Clone, PartialEq, ::prost::Message)]
 pub struct CacheKvRequest {
     #[prost(string, tag = "1")]
     pub key: ::prost::alloc::string::String,
@@ -27,15 +15,15 @@ pub struct CacheKvResponse {
     pub message: ::prost::alloc::string::String,
 }
 /// Generated client implementations.
-pub mod hello_service_client {
+pub mod cache_kv_service_client {
     #![allow(unused_variables, dead_code, missing_docs, clippy::let_unit_value)]
     use tonic::codegen::*;
     use tonic::codegen::http::Uri;
     #[derive(Debug, Clone)]
-    pub struct HelloServiceClient<T> {
+    pub struct CacheKvServiceClient<T> {
         inner: tonic::client::Grpc<T>,
     }
-    impl HelloServiceClient<tonic::transport::Channel> {
+    impl CacheKvServiceClient<tonic::transport::Channel> {
         /// Attempt to create a new client by connecting to a given endpoint.
         pub async fn connect<D>(dst: D) -> Result<Self, tonic::transport::Error>
         where
@@ -46,7 +34,7 @@ pub mod hello_service_client {
             Ok(Self::new(conn))
         }
     }
-    impl<T> HelloServiceClient<T>
+    impl<T> CacheKvServiceClient<T>
     where
         T: tonic::client::GrpcService<tonic::body::BoxBody>,
         T::Error: Into<StdError>,
@@ -64,7 +52,7 @@ pub mod hello_service_client {
         pub fn with_interceptor<F>(
             inner: T,
             interceptor: F,
-        ) -> HelloServiceClient<InterceptedService<T, F>>
+        ) -> CacheKvServiceClient<InterceptedService<T, F>>
         where
             F: tonic::service::Interceptor,
             T::ResponseBody: Default,
@@ -78,7 +66,7 @@ pub mod hello_service_client {
                 http::Request<tonic::body::BoxBody>,
             >>::Error: Into<StdError> + Send + Sync,
         {
-            HelloServiceClient::new(InterceptedService::new(inner, interceptor))
+            CacheKvServiceClient::new(InterceptedService::new(inner, interceptor))
         }
         /// Compress requests with the given encoding.
         ///
@@ -111,28 +99,6 @@ pub mod hello_service_client {
             self.inner = self.inner.max_encoding_message_size(limit);
             self
         }
-        pub async fn hello(
-            &mut self,
-            request: impl tonic::IntoRequest<super::HelloRequest>,
-        ) -> std::result::Result<tonic::Response<super::HelloResponse>, tonic::Status> {
-            self.inner
-                .ready()
-                .await
-                .map_err(|e| {
-                    tonic::Status::new(
-                        tonic::Code::Unknown,
-                        format!("Service was not ready: {}", e.into()),
-                    )
-                })?;
-            let codec = tonic::codec::ProstCodec::default();
-            let path = http::uri::PathAndQuery::from_static(
-                "/helloworld.HelloService/Hello",
-            );
-            let mut req = request.into_request();
-            req.extensions_mut()
-                .insert(GrpcMethod::new("helloworld.HelloService", "Hello"));
-            self.inner.unary(req, path, codec).await
-        }
         pub async fn cache_kv(
             &mut self,
             request: impl tonic::IntoRequest<super::CacheKvRequest>,
@@ -151,33 +117,29 @@ pub mod hello_service_client {
                 })?;
             let codec = tonic::codec::ProstCodec::default();
             let path = http::uri::PathAndQuery::from_static(
-                "/helloworld.HelloService/cache_kv",
+                "/cachekv.CacheKVService/cache_kv",
             );
             let mut req = request.into_request();
             req.extensions_mut()
-                .insert(GrpcMethod::new("helloworld.HelloService", "cache_kv"));
+                .insert(GrpcMethod::new("cachekv.CacheKVService", "cache_kv"));
             self.inner.unary(req, path, codec).await
         }
     }
 }
 /// Generated server implementations.
-pub mod hello_service_server {
+pub mod cache_kv_service_server {
     #![allow(unused_variables, dead_code, missing_docs, clippy::let_unit_value)]
     use tonic::codegen::*;
-    /// Generated trait containing gRPC methods that should be implemented for use with HelloServiceServer.
+    /// Generated trait containing gRPC methods that should be implemented for use with CacheKvServiceServer.
     #[async_trait]
-    pub trait HelloService: Send + Sync + 'static {
-        async fn hello(
-            &self,
-            request: tonic::Request<super::HelloRequest>,
-        ) -> std::result::Result<tonic::Response<super::HelloResponse>, tonic::Status>;
+    pub trait CacheKvService: Send + Sync + 'static {
         async fn cache_kv(
             &self,
             request: tonic::Request<super::CacheKvRequest>,
         ) -> std::result::Result<tonic::Response<super::CacheKvResponse>, tonic::Status>;
     }
     #[derive(Debug)]
-    pub struct HelloServiceServer<T: HelloService> {
+    pub struct CacheKvServiceServer<T: CacheKvService> {
         inner: _Inner<T>,
         accept_compression_encodings: EnabledCompressionEncodings,
         send_compression_encodings: EnabledCompressionEncodings,
@@ -185,7 +147,7 @@ pub mod hello_service_server {
         max_encoding_message_size: Option<usize>,
     }
     struct _Inner<T>(Arc<T>);
-    impl<T: HelloService> HelloServiceServer<T> {
+    impl<T: CacheKvService> CacheKvServiceServer<T> {
         pub fn new(inner: T) -> Self {
             Self::from_arc(Arc::new(inner))
         }
@@ -237,9 +199,9 @@ pub mod hello_service_server {
             self
         }
     }
-    impl<T, B> tonic::codegen::Service<http::Request<B>> for HelloServiceServer<T>
+    impl<T, B> tonic::codegen::Service<http::Request<B>> for CacheKvServiceServer<T>
     where
-        T: HelloService,
+        T: CacheKvService,
         B: Body + Send + 'static,
         B::Error: Into<StdError> + Send + 'static,
     {
@@ -255,54 +217,11 @@ pub mod hello_service_server {
         fn call(&mut self, req: http::Request<B>) -> Self::Future {
             let inner = self.inner.clone();
             match req.uri().path() {
-                "/helloworld.HelloService/Hello" => {
+                "/cachekv.CacheKVService/cache_kv" => {
                     #[allow(non_camel_case_types)]
-                    struct HelloSvc<T: HelloService>(pub Arc<T>);
+                    struct cache_kvSvc<T: CacheKvService>(pub Arc<T>);
                     impl<
-                        T: HelloService,
-                    > tonic::server::UnaryService<super::HelloRequest> for HelloSvc<T> {
-                        type Response = super::HelloResponse;
-                        type Future = BoxFuture<
-                            tonic::Response<Self::Response>,
-                            tonic::Status,
-                        >;
-                        fn call(
-                            &mut self,
-                            request: tonic::Request<super::HelloRequest>,
-                        ) -> Self::Future {
-                            let inner = Arc::clone(&self.0);
-                            let fut = async move { (*inner).hello(request).await };
-                            Box::pin(fut)
-                        }
-                    }
-                    let accept_compression_encodings = self.accept_compression_encodings;
-                    let send_compression_encodings = self.send_compression_encodings;
-                    let max_decoding_message_size = self.max_decoding_message_size;
-                    let max_encoding_message_size = self.max_encoding_message_size;
-                    let inner = self.inner.clone();
-                    let fut = async move {
-                        let inner = inner.0;
-                        let method = HelloSvc(inner);
-                        let codec = tonic::codec::ProstCodec::default();
-                        let mut grpc = tonic::server::Grpc::new(codec)
-                            .apply_compression_config(
-                                accept_compression_encodings,
-                                send_compression_encodings,
-                            )
-                            .apply_max_message_size_config(
-                                max_decoding_message_size,
-                                max_encoding_message_size,
-                            );
-                        let res = grpc.unary(method, req).await;
-                        Ok(res)
-                    };
-                    Box::pin(fut)
-                }
-                "/helloworld.HelloService/cache_kv" => {
-                    #[allow(non_camel_case_types)]
-                    struct cache_kvSvc<T: HelloService>(pub Arc<T>);
-                    impl<
-                        T: HelloService,
+                        T: CacheKvService,
                     > tonic::server::UnaryService<super::CacheKvRequest>
                     for cache_kvSvc<T> {
                         type Response = super::CacheKvResponse;
@@ -357,7 +276,7 @@ pub mod hello_service_server {
             }
         }
     }
-    impl<T: HelloService> Clone for HelloServiceServer<T> {
+    impl<T: CacheKvService> Clone for CacheKvServiceServer<T> {
         fn clone(&self) -> Self {
             let inner = self.inner.clone();
             Self {
@@ -369,7 +288,7 @@ pub mod hello_service_server {
             }
         }
     }
-    impl<T: HelloService> Clone for _Inner<T> {
+    impl<T: CacheKvService> Clone for _Inner<T> {
         fn clone(&self) -> Self {
             Self(Arc::clone(&self.0))
         }
@@ -379,7 +298,7 @@ pub mod hello_service_server {
             write!(f, "{:?}", self.0)
         }
     }
-    impl<T: HelloService> tonic::server::NamedService for HelloServiceServer<T> {
-        const NAME: &'static str = "helloworld.HelloService";
+    impl<T: CacheKvService> tonic::server::NamedService for CacheKvServiceServer<T> {
+        const NAME: &'static str = "cachekv.CacheKVService";
     }
 }

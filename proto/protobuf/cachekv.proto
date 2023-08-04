@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package cachekv;
+
+service CacheKVService {
+   rpc cache_kv(CacheKVRequest) returns (CacheKVResponse);
+}
+
+
+message CacheKVRequest {
+  string key = 1;
+  string value = 2;
+  int64 timeout = 3;
+}
+
+message CacheKVResponse {
+  string message = 1;
+}
