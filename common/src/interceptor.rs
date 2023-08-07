@@ -1,4 +1,4 @@
-use opentelemetry::global;
+use opentelemetry::{global};
 use opentelemetry::propagation::{Extractor, Injector};
 use tonic::{Request, Status};
 use tonic::metadata::{MetadataMap, MetadataValue};
@@ -6,6 +6,7 @@ use tonic::service::Interceptor;
 use tracing_attributes::instrument;
 use tracing_opentelemetry::OpenTelemetrySpanExt;
 use uuid::Uuid;
+use crate::meta;
 
 #[derive(Debug, Default, Clone)]
 pub struct MyInterceptor;
@@ -24,9 +25,7 @@ impl Interceptor for MyInterceptor {
             Some(_) => {}
         }
 
-
-
-        if !request.metadata().contains_key("traceparent") {
+        if !request.metadata().contains_key(meta::TRACEPARENT_HEADER) {
             global::get_text_map_propagator(|propagator| {
                 propagator.inject_context(
                     &tracing::Span::current().context(),
