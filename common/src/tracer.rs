@@ -6,14 +6,14 @@ use tracing_attributes::instrument;
 use tracing_subscriber::prelude::*;
 use tracing_subscriber::Registry;
 
-pub fn init_tracer(service_name: &str, _jeager_endpoint: &Option<String>) {
+pub fn init_tracer(service_name: &str, _jaeger_endpoint: &Option<String>) {
     // Initialize the global tracer
     //global::set_text_map_propagator(opentelemetry_jaeger::Propagator::new());
     global::set_text_map_propagator(TraceContextPropagator::new());
     let mut pipeline = opentelemetry_jaeger::new_agent_pipeline();
 
-    if let Some(jeager_endpoint) = _jeager_endpoint.as_ref() {
-        pipeline =  pipeline.with_endpoint(jeager_endpoint);
+    if let Some(jaeger_endpoint) = _jaeger_endpoint.as_ref() {
+        pipeline =  pipeline.with_endpoint(jaeger_endpoint);
     }
     let tracer = pipeline.with_service_name(service_name)
         .install_batch(opentelemetry::runtime::Tokio)
@@ -38,7 +38,7 @@ pub fn init_tracer(service_name: &str, _jeager_endpoint: &Option<String>) {
 
 
 #[tokio::test]
-pub async fn test_mytracer() {
+pub async fn test_tracer() {
     init_tracer("test", &Some(String::from("127.0.0.1:6831")));
     test_tracing();
 }

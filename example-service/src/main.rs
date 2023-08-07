@@ -14,14 +14,12 @@ use tracing::{info, Instrument, Span};
 use tracing_attributes::instrument;
 use tracing_opentelemetry::OpenTelemetrySpanExt;
 
-use common::{interceptor, mytracer};
+use common::{interceptor, tracer};
 use proto::cachekv_pb::{cache_kv_service_server::CacheKvService, CacheKvRequest, CacheKvResponse, FILE_DESCRIPTOR_SET};
 use proto::cachekv_pb::cache_kv_service_server::CacheKvServiceServer;
 
 use crate::config::CONFIG;
-
 mod config;
-mod utils;
 
 pub struct MyGreeter {
     redis_con: Arc<Mutex<Connection>>,
@@ -105,7 +103,7 @@ fn init_redis(config: config::RedisConfig) -> Arc<Mutex<Connection>> {
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     initialize(&config::CONFIG);
     //init_logger();
-    mytracer::init_tracer(&config::CONFIG.name.as_str(), &config::CONFIG.jaeger_endpoint);
+    tracer::init_tracer(&config::CONFIG.name.as_str(), &config::CONFIG.jaeger_endpoint);
 
     let addr = SocketAddr::from(([0, 0, 0, 0], CONFIG.port as u16));
     let redis_con = init_redis(config::CONFIG.redis_config.clone());

@@ -1,6 +1,10 @@
-use std::fs;
+use std::env;
+
 use lazy_static::lazy_static;
+use log::warn;
 use serde_derive::Deserialize;
+
+use common::utils;
 
 #[derive(Debug, Deserialize)]
 pub struct APPConfig {
@@ -12,7 +16,7 @@ pub struct APPConfig {
     pub jaeger_endpoint: Option<String>,
 }
 
-#[derive(Debug, Deserialize,Clone)]
+#[derive(Debug, Deserialize, Clone)]
 pub struct RedisConfig {
     pub host: String,
     pub port: u16,
@@ -20,20 +24,19 @@ pub struct RedisConfig {
     pub password: String,
 }
 
-
-
-impl APPConfig {
-    pub fn from_file(file_path: &str) -> Result<Self, Box<dyn std::error::Error>> {
-        let config_str = fs::read_to_string(file_path)?;
-        let config: APPConfig = toml::from_str(&config_str)?;
-        Ok(config)
-    }
-}
-
 lazy_static! {
     #[derive(Debug)]
     pub static ref CONFIG: APPConfig = {
-         APPConfig::from_file("config.toml").expect("Failed to load the configuration.")
+        let cfg_file_path = match env::var("CONFIG_PATH") {
+            Ok(config_path) => {
+                config_path
+            },
+            Err(_) =>{
+                warn!("CONFIG_PATH not set, use default config.toml");
+                String::from("config.toml")
+            },
+        };
+        utils::read_config_from_file::<APPConfig>(cfg_file_path.as_str()).expect("Failed to load the configuration.")
     };
 }
 
@@ -41,6 +44,7 @@ lazy_static! {
 #[cfg(test)]
 mod tests {
     use lazy_static::initialize;
+
     use super::*;
 
     #[test]
@@ -49,6 +53,5 @@ mod tests {
 
         // Now you can access the CONFIG lazy-static variable in the test function.
         println!("{:?}", *CONFIG);
-
     }
 }
