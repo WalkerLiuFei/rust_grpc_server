@@ -1,9 +1,6 @@
 use std::fs;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
-
-
-
     for proto_file in fs::read_dir("protobuf")? {
         let file_name_with_suffix = proto_file?.file_name().to_string_lossy().to_string();
         let file_name =  file_name_with_suffix.split(".").collect::<Vec<&str>>()[0];

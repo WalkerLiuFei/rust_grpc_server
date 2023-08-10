@@ -21,13 +21,13 @@ use proto::cachekv_pb::cache_kv_service_server::CacheKvServiceServer;
 use crate::config::CONFIG;
 mod config;
 
-pub struct MyGreeter {
+pub struct KVService {
     redis_con: Arc<Mutex<Connection>>,
 }
 
 
 #[tonic::async_trait]
-impl CacheKvService for MyGreeter {
+impl CacheKvService for KVService {
     #[instrument(skip(self, request), fields(trace_id, span_id, parent_span_id))]
     async fn cache_kv(&self, request: Request<CacheKvRequest>) -> Result<Response<CacheKvResponse>, Status> {
         let mut redis_con = self.redis_con.try_lock().unwrap();
@@ -77,9 +77,9 @@ async fn async_func() {
     sleep(Duration::from_secs(1));
 }
 
-impl MyGreeter {
-    fn new(redis_con: Arc<Mutex<Connection>>) -> MyGreeter {
-        MyGreeter {
+impl KVService {
+    fn new(redis_con: Arc<Mutex<Connection>>) -> KVService {
+        KVService {
             redis_con,
         }
     }
@@ -113,11 +113,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .build()
         .unwrap();
 
-
     Server::builder()
         .layer(tonic::service::interceptor(interceptor::MyInterceptor::default()))
         .add_service(reflection)
-        .add_service(CacheKvServiceServer::new(MyGreeter::new(redis_con)))
+        .add_service(CacheKvServiceServer::new(KVService::new(redis_con)))
         .serve(addr)
 
         .await?;

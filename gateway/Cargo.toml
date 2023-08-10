@@ -24,3 +24,7 @@ tracing-subscriber = { version = "0.3.17", features = ["env-filter"] }
 tracing-attributes = "0.1.26"
 common = {path = "../common"}
 actix-web = "4.3.1"
+tonic-reflection = "0.9.2"
+prost = "0.11.9"
+prost-types = "0.11.9"
+tokio-stream = "0.1.14"
