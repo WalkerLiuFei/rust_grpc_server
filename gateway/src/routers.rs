@@ -21,7 +21,6 @@ pub(crate) async fn internal_call(req_body: String) -> impl Responder {
     }).unwrap_or_else(|err| HttpResponse::BadRequest().body(format!("Invalid request body: {},{}", req_body,err)))
 }
 
-
 // add more ....
 
 

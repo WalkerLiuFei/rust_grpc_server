@@ -21,7 +21,6 @@ impl ReflectionClient {
             .connect()
             .await
             .unwrap();
-        // let channel = Channel::from_static(uri).connect_timeout(Duration::new( 10,0));
         let client = server_reflection_client::ServerReflectionClient::new(conn);
         Ok(ReflectionClient { client })
     }

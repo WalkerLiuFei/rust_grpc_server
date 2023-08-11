@@ -1,5 +1,4 @@
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
-use serde_derive::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize)]
 pub struct InternalCall {
@@ -9,6 +8,36 @@ pub struct InternalCall {
     pub body: serde_json::Value,
 }
 
+pub enum ResponseStatusCode {
+    Success,
+    Failure,
+}
+
+pub struct Response<T> {
+    pub status_code: ResponseStatusCode,
+    pub status_message: String,
+    pub body: T,
+}
+
+
+pub struct SetGRPCMappingRequest {
+    pub http_uri: String,
+    pub grpc_service: String,
+    pub grpc_method: String,
+}
+
+pub struct GetGRPCMappingRequest {
+    pub http_uri: String,
+}
+
+pub struct DeleteGRPCMappingRequest {
+    pub http_uri: String,
+}
+
+pub struct GetGRPCMappingResponse {
+    pub grpc_service: String,
+    pub grpc_method: String,
+}
 
 // Custom serialization function for the JSON raw field
 fn serialize_json_raw<S>(value: &serde_json::Value, serializer: S) -> Result<S::Ok, S::Error>

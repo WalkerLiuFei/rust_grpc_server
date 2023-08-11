@@ -8,6 +8,9 @@ mod models;
 mod tracer;
 mod routers;
 mod reflection_client;
+mod config;
+mod db;
+mod entities;
 
 
 #[actix_web::main]
