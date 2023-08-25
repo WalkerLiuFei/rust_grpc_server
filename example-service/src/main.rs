@@ -1,5 +1,6 @@
 use std::net::SocketAddr;
 use std::sync::Arc;
+use std::thread;
 use std::thread::sleep;
 use std::time::Duration;
 
@@ -14,7 +15,8 @@ use tracing::{info, Instrument, Span};
 use tracing_attributes::instrument;
 use tracing_opentelemetry::OpenTelemetrySpanExt;
 
-use common::{interceptor, tracer};
+use common::{clients, interceptor, tracer};
+use common::clients::consul;
 use proto::cachekv_pb::{cache_kv_service_server::CacheKvService, CacheKvRequest, CacheKvResponse, FILE_DESCRIPTOR_SET};
 use proto::cachekv_pb::cache_kv_service_server::CacheKvServiceServer;
 
@@ -112,13 +114,23 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .register_encoded_file_descriptor_set(FILE_DESCRIPTOR_SET)
         .build()
         .unwrap();
+    thread::spawn(|| {
+        // FIXME: consul client should be singleton
+        let mut consul_client = consul::ConsulClient::new(config::CONFIG.consul_endpoint.unwrap().to_string());
+        let service = consul::ServiceInfo {
+            name: config::CONFIG.name.clone(),
+            address: config::CONFIG.host.clone(),
+            port: config::CONFIG.port as u32,
+        };
+        // Running the asynchronous registration using Tokio
+        tokio::runtime::Runtime::new().unwrap().block_on(consul_client.register(&service)).expect("register service failed");
+    });
 
     Server::builder()
         .layer(tonic::service::interceptor(interceptor::MyInterceptor::default()))
         .add_service(reflection)
         .add_service(CacheKvServiceServer::new(KVService::new(redis_con)))
         .serve(addr)
-
         .await?;
     Ok(())
 }

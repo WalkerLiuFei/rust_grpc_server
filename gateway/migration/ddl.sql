@@ -8,8 +8,7 @@ CREATE TABLE uri_grpc_mapping
     grpc_method  VARCHAR(255) NOT NULL,
     created_at   TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at   TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    KEY          http_uri(http_uri),
-    KEY          grpc_service(grpc_service),
-    KEY          grpc_method(grpc_method)
+    UNIQUE KEY         uni_idx_uri(http_uri),
+    UNIQUE KEY         uni_idx_grpc(grpc_service,grpc_method)
 );
 

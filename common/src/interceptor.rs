@@ -14,7 +14,6 @@ pub struct MyInterceptor;
 impl Interceptor for MyInterceptor {
     #[instrument(name = "interceptor", skip(self, request) )]
     fn call(&mut self, mut request: Request<()>) -> Result<Request<()>, Status> {
-
         // use x-request-id as trace id
         match request.metadata().get("x-request-id") {
             None => {

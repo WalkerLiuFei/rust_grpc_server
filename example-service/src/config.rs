@@ -14,6 +14,7 @@ pub struct APPConfig {
     pub name: String,
     pub log_level: String,
     pub jaeger_endpoint: Option<String>,
+    pub consul_endpoint: Option<String>,
 }
 
 #[derive(Debug, Deserialize, Clone)]

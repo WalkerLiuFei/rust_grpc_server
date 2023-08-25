@@ -26,17 +26,24 @@ pub struct SetGRPCMappingRequest {
     pub grpc_method: String,
 }
 
-pub struct GetGRPCMappingRequest {
-    pub http_uri: String,
+pub struct SetGRPCMappingResponse {
+    pub set: bool,
 }
-
 pub struct DeleteGRPCMappingRequest {
     pub http_uri: String,
 }
 
-pub struct GetGRPCMappingResponse {
+pub struct DeleteGRPCMappingResponse {
+    pub deleted: bool,
+}
+
+pub struct GRPCMapping {
+    pub http_uri: String,
     pub grpc_service: String,
     pub grpc_method: String,
+}
+pub struct ListGRPCMappingResponse {
+    pub mappings: Vec<GRPCMapping>,
 }
 
 // Custom serialization function for the JSON raw field

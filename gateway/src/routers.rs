@@ -21,6 +21,12 @@ pub(crate) async fn internal_call(req_body: String) -> impl Responder {
     }).unwrap_or_else(|err| HttpResponse::BadRequest().body(format!("Invalid request body: {},{}", req_body,err)))
 }
 
+
+
+pub (crate) async fn list_services() -> impl Responder {
+
+    HttpResponse::Ok().body("list_services")
+}
 // add more ....
 
 
