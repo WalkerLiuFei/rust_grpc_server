@@ -116,7 +116,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .unwrap();
     thread::spawn(|| {
         // FIXME: consul client should be singleton
-        let mut consul_client = consul::ConsulClient::new(config::CONFIG.consul_endpoint.unwrap().to_string());
+        let mut consul_client = consul::ConsulClient::new(config::CONFIG.consul_endpoint.clone().unwrap().to_string());
         let service = consul::ServiceInfo {
             name: config::CONFIG.name.clone(),
             address: config::CONFIG.host.clone(),

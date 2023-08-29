@@ -8,7 +8,7 @@ jaeger_endpoint = "127.0.0.1:6831"
 
 [redis_config]
 host = "localhost"
-port = 55000
+port = 9090
 user = "default"
 password = "redispw"
 
